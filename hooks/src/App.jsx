@@ -2,27 +2,31 @@ import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import axios from "axios";
+import { useTodos } from "./hooks/useTodos.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    setInterval(() => {
-      setCount(count + 10);
-    }, 10000);
-  }, []);
-
-  return <>{count === 10 ? null : <Mycomponent />}</>;
+  const { todos, isLoading } = useTodos(10);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  return (
+    <>
+      {todos.map(function (todo) {
+        return <Track todo={todo} />;
+      })}
+    </>
+  );
 }
 
-function Mycomponent() {
-  useEffect(() => {
-    console.error("component mounted");
-    return function () {
-      console.log("component unmounted");
-    };
-  }, []);
-  return <div>from inside the component</div>;
+function Track({ todo }) {
+  return (
+    <div>
+      {todo.id} <br />
+      {todo.todo} <br />
+      {todo.completed} <br />
+    </div>
+  );
 }
 
 export default App;
