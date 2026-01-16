@@ -5,27 +5,29 @@ import "./App.css";
 import axios from "axios";
 import { useTodos } from "./hooks/useTodos.jsx";
 
-function App() {
-  const { todos, isLoading } = useTodos(10);
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  return (
-    <>
-      {todos.map(function (todo) {
-        return <Track todo={todo} />;
-      })}
-    </>
-  );
+function useDebaunce(value, timeout) {
+  const [debaunceValue, setDebaunceValue] = useState(value);
+
+  useEffect(() => {
+    const timoutNumber = setTimeout(() => {
+      setDebaunceValue(value);
+    }, timeout);
+
+    return () => {
+      clearInterval(timoutNumber);
+    };
+  }, [value]);
+  return debaunceValue;
 }
 
-function Track({ todo }) {
+function App() {
+  const [value, setValue] = useState(0);
+  const debaunceValue = useDebaunce(value, 500);
   return (
-    <div>
-      {todo.id} <br />
-      {todo.todo} <br />
-      {todo.completed} <br />
-    </div>
+    <>
+      Deabunce value is {debaunceValue}
+      <input type="text" onChange={(e) => setValue(e.target.value)} />
+    </>
   );
 }
 
